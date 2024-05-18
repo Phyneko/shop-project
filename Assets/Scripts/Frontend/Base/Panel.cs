@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public abstract class Panel : MonoBehaviour, IRefresh
@@ -5,6 +6,9 @@ public abstract class Panel : MonoBehaviour, IRefresh
     [SerializeField, ReadOnly] private bool isOpen;
 
     public bool IsOpen => isOpen;
+
+    public event Action OnOpen;
+    public event Action OnClose;
 
     public void Open()
     {
@@ -16,6 +20,7 @@ public abstract class Panel : MonoBehaviour, IRefresh
 
         isOpen = false;
         gameObject.SetActive(isOpen);
+        OnOpen?.Invoke();
     }
 
     public void Close()
@@ -28,11 +33,15 @@ public abstract class Panel : MonoBehaviour, IRefresh
 
         isOpen = false;
         gameObject.SetActive(isOpen);
+
+        OnClose.Invoke();
     }
 
-    public abstract void Initialize();
+    public virtual void Initialize() { }
 
-    public abstract void Refresh();
+    public virtual void Refresh() { }
 
     public virtual bool CanOpen() => true;
+
+    public virtual bool CanClose() => true;
 }
